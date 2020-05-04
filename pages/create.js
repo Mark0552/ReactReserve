@@ -23,6 +23,7 @@ function CreateProduct() {
   const [product, setProduct] = React.useState(INITIAL_PRODUCT);
   const [mediaPreview, setMediaPreview] = React.useState('')
   const [success, setSuccess] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
 
   function handleChange(event) {
     const { name, value, files } = event.target;
@@ -40,16 +41,20 @@ function CreateProduct() {
     data.append('upload_preset', 'ReactReserve')
     data.append('cloud_name', 'dnpejsbij')
     const response = await axios.post(process.env.CLOUDINARY_URL, data)
-    const mediaUrl = response.data.url
+    const mediaUrl = await response.data.url
     return mediaUrl;
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event) {    
     event.preventDefault();
+    setLoading(true)
     const mediaUrl = await handleImageUpload()
     const url = `${baseUrl}/api/product`
-    const payload = { ...product, mediaUrl }
-    await axios.post(url, payload);
+    const { name, price, description } = product
+    const payload = { name, price, description, mediaUrl }
+    const response = await axios.post(url, payload);
+    console.log({response})
+    setLoading(false)
     setProduct(INITIAL_PRODUCT)
     setSuccess(true)
   }
@@ -60,7 +65,7 @@ function CreateProduct() {
         <Icon name="add" color="orange" />
         Create New Product
       </Header>
-      <Form success={success} onSubmit={handleSubmit}>
+      <Form loading={loading} success={success} onSubmit={handleSubmit}>
         <Message
           success
           icon='check'
@@ -108,6 +113,7 @@ function CreateProduct() {
         />
         <Form.Field
           control={Button}
+          disabled={loading}
           color="blue"
           icon="pencil alternate"
           content="Submit"
