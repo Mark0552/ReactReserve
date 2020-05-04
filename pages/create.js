@@ -9,6 +9,8 @@ import {
   Icon,
 } from "semantic-ui-react";
 import React from "react";
+import axios from 'axios'
+import baseUrl from '../utils/baseUrl'
 
 const INITIAL_PRODUCT = {
   name: "",
@@ -32,9 +34,22 @@ function CreateProduct() {
     }
   }
 
-  function handleSubmit(event) {
+  async function handleImageUpload() {
+    const data = new FormData()
+    data.append('file', product.media)
+    data.append('upload_preset', 'ReactReserve')
+    data.append('cloud_name', 'dnpejsbij')
+    const response = await axios.post(process.env.CLOUDINARY_URL, data)
+    const mediaUrl = response.data.url
+    return mediaUrl;
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    console.log(product);
+    const mediaUrl = await handleImageUpload()
+    const url = `${baseUrl}/api/product`
+    const payload = { ...product, mediaUrl }
+    await axios.post(url, payload);
     setProduct(INITIAL_PRODUCT)
     setSuccess(true)
   }
