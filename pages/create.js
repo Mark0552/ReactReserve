@@ -48,10 +48,10 @@ function CreateProduct() {
   async function handleSubmit(event) {    
     event.preventDefault();
     setLoading(true)
-    const mediaUrl = await handleImageUpload()
+    const mediaUrl = await handleImageUpload();
     const url = `${baseUrl}/api/product`
     const { name, price, description } = product
-    const payload = { name, price, description, mediaUrl }
+    const payload = { name, price, description, mediaUrl };
     const response = await axios.post(url, payload);
     console.log({response})
     setLoading(false)

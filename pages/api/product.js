@@ -37,7 +37,7 @@ async function handlePostRequest(req, res) {
         description,
         mediaUrl
     }).save()
-    res.status(201).json(product)
+    // res.status(201).json(product)
 }
 
 async function handleDeleteRequest(req, res) {
