@@ -1,6 +1,10 @@
 import React from "react";
 import { Button, Form, Icon, Message, Segment } from "semantic-ui-react";
 import Link from "next/link";
+import axios from 'axios'
+import catchErrors from '../utils/catchErrors'
+import baseUrl from '../utils/baseUrl'
+
 
 const INITIAL_USER = {
   name: "",
@@ -10,7 +14,9 @@ const INITIAL_USER = {
 
 function Signup() {
   const [user, setUser] = React.useState(INITIAL_USER);
-  const [disabled, setDisabled] = React.useState(true)
+  const [disabled, setDisabled] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState('')
 
   React.useEffect(() => {
     const isUser = Object.values(user).every(el => Boolean(el))
@@ -22,6 +28,22 @@ function Signup() {
     setUser((prevState) => ({ ...prevState, [name]: value }));
   }
 
+  function handleSubmit(event) {
+    event.preventDefault()
+
+    try {
+      setLoading(true);
+      setError('');
+      const url = `${baseUrl}/api/signup`
+      const payload = { ...user }
+      await axios.post(url, payload)
+    } catch(error) {
+      catchErrors(error, setError)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       <Message
@@ -31,7 +53,12 @@ function Signup() {
         content="Create A New Account"
         color="teal"
       />
-      <Form>
+      <Form error={Boolean(error)} loading={loading} onSubmit={handleSubmit}>
+        <Message
+          error
+          header='Oops'
+          content={error}
+        />
         <Segment>
           <Form.Input
             fluid
@@ -65,7 +92,7 @@ function Signup() {
             value={user.password}
             onChange={handleChange}
           />
-          <Button disabled={disabled} icon="signup" type="submit" color="orange" content="Signup" />
+          <Button disabled={disabled || loading} icon="signup" type="submit" color="orange" content="Signup" />
         </Segment>
       </Form>
       <Message attatched="bottom" warning>
