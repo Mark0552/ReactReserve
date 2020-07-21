@@ -9,6 +9,7 @@ class MyApp extends App {
 
   static async getInitialProps({ Component, ctx }) {
     const { token } = parseCookies(ctx)
+    // Cookies.token
 
     let pageProps = {};
 

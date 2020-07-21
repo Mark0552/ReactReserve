@@ -25,7 +25,7 @@ export default async (req, res) => {
             return res.status(422).send(`User Already Exists With Email ${email}`)
         }
 
-            const hash = await bcrypt.hash(password, 10)
+        const hash = await bcrypt.hash(password, 10)
 
         const newUser = await new User({
             name,

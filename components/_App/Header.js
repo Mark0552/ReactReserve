@@ -8,6 +8,7 @@ Router.onRouteChangeComplete = () => NProgress.done();
 Router.onRouteChangeError = () => NProgress.done();
 
 function Header({ user }) {
+  console.log(user)
   const router = useRouter();
 
   function isActive(route) {
@@ -50,7 +51,7 @@ function Header({ user }) {
               <Menu.Item header active={isActive("/account")}>
                 <Icon name="user" size="large" />
                 Account
-              </Menu.Item>
+              </Menu.Item> 
             </Link>
 
             <Menu.Item header>
