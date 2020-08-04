@@ -12,6 +12,16 @@ function AddProductToCart({ user, productId }) {
   const [success, setSuccess] = React.useState(false);
   const router = useRouter();
 
+  React.useEffect(() => {
+    let timeout;
+    if (success) {
+      setTimeout(() => setSuccess(false), 3000);
+    }
+    return () => {
+      clearTimeout(timeout);
+    }
+  }, [success])         
+
   async function handleAddProductToCart() {
     try {
       setLoading(true)
